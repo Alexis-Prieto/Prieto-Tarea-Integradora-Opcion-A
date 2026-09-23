@@ -74,8 +74,17 @@ fun AppNavigation() {
     ) {
         NavHost(navController = navController, startDestination = "inicio") {
             composable("inicio") {
+                PantallaInicio(
+                    onAbrirDrawer = {
+                        scope.launch { drawerState.open() }
+                    },
+                    onDoctorClick = { doctorId ->
+                        // Aquí conectaremos la navegación al perfil en el siguiente paso
+                    }
+                )
             }
             composable("mis_citas") {
+                // Se conectará más adelante
             }
         }
     }
