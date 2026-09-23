@@ -75,16 +75,32 @@ fun AppNavigation() {
         NavHost(navController = navController, startDestination = "inicio") {
             composable("inicio") {
                 PantallaInicio(
-                    onAbrirDrawer = {
-                        scope.launch { drawerState.open() }
-                    },
+                    onAbrirDrawer = { scope.launch { drawerState.open() } },
                     onDoctorClick = { doctorId ->
-                        // Aquí conectaremos la navegación al perfil en el siguiente paso
+                        navController.navigate("detalle/$doctorId")
+                    }
+                )
+            }
+            composable("detalle/{doctorId}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull() ?: 1
+                PantallaDetalle(
+                    doctorId = id,
+                    onVolver = { navController.popBackStack() },
+                    onReservarClick = { doctorId ->
+                        navController.navigate("seleccion/$doctorId")
+                    }
+                )
+            }
+            composable("seleccion/{doctorId}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull() ?: 1
+                PantallaSeleccion(
+                    doctorId = id,
+                    onVolver = { navController.popBackStack() },
+                    onContinuar = { fecha, hora ->
                     }
                 )
             }
             composable("mis_citas") {
-                // Se conectará más adelante
             }
         }
     }
