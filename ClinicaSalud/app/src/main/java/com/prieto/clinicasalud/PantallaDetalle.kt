@@ -85,7 +85,7 @@ fun PantallaDetalle(
                     onClick = { onReservarClick(doctor.id) },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Reservar Cita")
+                    Text("Agendar cita")
                 }
             }
         } else {

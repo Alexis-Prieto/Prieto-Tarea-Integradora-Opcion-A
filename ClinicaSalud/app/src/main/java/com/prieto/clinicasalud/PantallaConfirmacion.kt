@@ -83,7 +83,7 @@ fun PantallaConfirmacion(
                     },
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Confirmar Reserva")
+                    Text("Ver mis citas")
                 }
             }
         }

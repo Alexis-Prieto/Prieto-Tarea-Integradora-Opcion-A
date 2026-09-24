@@ -25,7 +25,7 @@ fun PantallaSeleccion(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Seleccionar Fecha y Hora") },
+                title = { Text("Agendar cita") },
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
                         Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
@@ -86,7 +86,7 @@ fun PantallaSeleccion(
                     enabled = fechaSeleccionada.isNotEmpty() && horaSeleccionada.isNotEmpty(),
                     modifier = Modifier.fillMaxWidth()
                 ) {
-                    Text("Continuar a Confirmación")
+                    Text("Confirmar cita")
                 }
             }
         }

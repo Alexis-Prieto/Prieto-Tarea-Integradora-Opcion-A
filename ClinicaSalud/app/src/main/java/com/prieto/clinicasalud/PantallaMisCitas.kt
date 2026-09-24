@@ -63,9 +63,31 @@ fun PantallaMisCitas(
                                     text = cita.doctorNombre,
                                     style = MaterialTheme.typography.titleMedium
                                 )
+
+                                // Lógica de colores diferenciados según el estado
+                                val esConfirmada = cita.estado == "Confirmada"
+                                val containerColor = if (esConfirmada) {
+                                    MaterialTheme.colorScheme.primaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.surfaceVariant
+                                }
+                                val labelColor = if (esConfirmada) {
+                                    MaterialTheme.colorScheme.onPrimaryContainer
+                                } else {
+                                    MaterialTheme.colorScheme.onSurfaceVariant
+                                }
+
                                 SuggestionChip(
                                     onClick = { },
-                                    label = { Text(cita.estado) }
+                                    label = {
+                                        Text(
+                                            text = cita.estado,
+                                            color = labelColor
+                                        )
+                                    },
+                                    colors = SuggestionChipDefaults.suggestionChipColors(
+                                        containerColor = containerColor
+                                    )
                                 )
                             }
                             Text(
