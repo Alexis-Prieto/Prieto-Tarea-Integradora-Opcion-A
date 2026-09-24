@@ -1,16 +1,19 @@
 package com.prieto.clinicasalud
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.CheckCircle
+import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun PantallaConfirmacion(
     doctorId: Int,
@@ -21,71 +24,71 @@ fun PantallaConfirmacion(
 ) {
     val doctor = SaludRepository.doctores.find { it.id == doctorId }
 
-    Scaffold(
-        topBar = {
-            TopAppBar(
-                title = { Text("Confirmar Cita") },
-                navigationIcon = {
-                    IconButton(onClick = onVolver) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Atrás")
-                    }
-                }
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(24.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
+    ) {
+        // Círculo verde claro con el ícono de check
+        Box(
+            modifier = Modifier
+                .size(80.dp)
+                .background(Color(0xFFE8F8EE), CircleShape),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Check,
+                contentDescription = null,
+                tint = Color(0xFF00A86B),
+                modifier = Modifier.size(44.dp)
             )
         }
-    ) { padding ->
-        if (doctor != null) {
-            Column(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .padding(padding)
-                    .padding(16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Icon(
-                        Icons.Default.CheckCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(64.dp),
-                        tint = MaterialTheme.colorScheme.primary
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-                    Text("Resumen de la Reserva", style = MaterialTheme.typography.titleLarge)
-                    Spacer(modifier = Modifier.height(16.dp))
 
-                    Card(modifier = Modifier.fillMaxWidth()) {
-                        Column(modifier = Modifier.padding(16.dp)) {
-                            Text("Médico: ${doctor.nombre}", style = MaterialTheme.typography.titleMedium)
-                            Text("Especialidad: ${doctor.especialidad}", style = MaterialTheme.typography.bodyMedium)
-                            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp))
-                            Text("Fecha: $fecha", style = MaterialTheme.typography.bodyLarge)
-                            Text("Hora: $hora", style = MaterialTheme.typography.bodyLarge)
-                        }
-                    }
-                }
+        Spacer(modifier = Modifier.height(24.dp))
 
-                Button(
-                    onClick = {
-                        SaludRepository.citasReservadas.add(
-                            Cita(
-                                id = SaludRepository.citasReservadas.size + 1,
-                                doctorNombre = doctor.nombre,
-                                especialidad = doctor.especialidad,
-                                fecha = fecha,
-                                hora = hora,
-                                estado = "Confirmada"
-                            )
-                        )
-                        onConfirmar()
-                    },
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text("Ver mis citas")
-                }
-            }
+        // Título principal
+        Text(
+            text = "¡Cita agendada!",
+            style = MaterialTheme.typography.titleLarge,
+            fontWeight = FontWeight.Bold
+        )
+
+        Spacer(modifier = Modifier.height(8.dp))
+
+        // Nombre del doctor
+        Text(
+            text = doctor?.nombre ?: "Doctor",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray
+        )
+
+        // Fecha y hora
+        Text(
+            text = "$fecha, $hora",
+            style = MaterialTheme.typography.bodyMedium,
+            color = Color.Gray
+        )
+
+        Spacer(modifier = Modifier.height(32.dp))
+
+        // Botón "Ver mis citas"
+        Button(
+            onClick = onConfirmar,
+            shape = RoundedCornerShape(16.dp),
+            colors = ButtonDefaults.buttonColors(
+                containerColor = Color(0xFFF3EDF7),
+                contentColor = Color.Black
+            ),
+            modifier = Modifier.height(44.dp)
+        ) {
+            Text(
+                text = "Ver mis citas",
+                style = MaterialTheme.typography.bodyMedium,
+                fontWeight = FontWeight.Medium,
+                modifier = Modifier.padding(horizontal = 12.dp)
+            )
         }
     }
 }
