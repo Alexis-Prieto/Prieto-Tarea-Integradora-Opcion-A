@@ -97,6 +97,24 @@ fun AppNavigation() {
                     doctorId = id,
                     onVolver = { navController.popBackStack() },
                     onContinuar = { fecha, hora ->
+                        navController.navigate("confirmacion/$id/$fecha/$hora")
+                    }
+                )
+            }
+            composable("confirmacion/{doctorId}/{fecha}/{hora}") { backStackEntry ->
+                val id = backStackEntry.arguments?.getString("doctorId")?.toIntOrNull() ?: 1
+                val fecha = backStackEntry.arguments?.getString("fecha") ?: ""
+                val hora = backStackEntry.arguments?.getString("hora") ?: ""
+
+                PantallaConfirmacion(
+                    doctorId = id,
+                    fecha = fecha,
+                    hora = hora,
+                    onVolver = { navController.popBackStack() },
+                    onConfirmar = {
+                        navController.navigate("mis_citas") {
+                            popUpTo("inicio")
+                        }
                     }
                 )
             }
