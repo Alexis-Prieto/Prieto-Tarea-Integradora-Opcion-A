@@ -38,22 +38,6 @@ fun PantallaDetalle(
                     }
                 }
             )
-        },
-        bottomBar = {
-            if (doctor != null) {
-                Box(modifier = Modifier.padding(16.dp)) {
-                    Button(
-                        onClick = { onReservarClick(doctor.id) },
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .height(50.dp),
-                        shape = RoundedCornerShape(12.dp),
-                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF532486))
-                    ) {
-                        Text("Agendar cita", style = MaterialTheme.typography.titleMedium)
-                    }
-                }
-            }
         }
     ) { padding ->
         if (doctor != null) {
@@ -61,69 +45,81 @@ fun PantallaDetalle(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = 24.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.SpaceBetween
             ) {
-                Spacer(modifier = Modifier.height(16.dp))
-
-                // Avatar circular morado claro con el icono '+'
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .background(Color(0xFFEADBFF), CircleShape),
-                    contentAlignment = Alignment.Center
+                Column(
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    modifier = Modifier.fillMaxWidth()
                 ) {
-                    Icon(
-                        Icons.Default.Add,
-                        contentDescription = null,
-                        modifier = Modifier.size(48.dp),
-                        tint = Color(0xFF532486)
-                    )
-                }
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(16.dp))
+                    Box(
+                        modifier = Modifier
+                            .size(100.dp)
+                            .background(Color(0xFFEADBFF), CircleShape),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Icon(
+                            Icons.Default.Add,
+                            contentDescription = null,
+                            modifier = Modifier.size(48.dp),
+                            tint = Color(0xFF532486)
+                        )
+                    }
 
-                // Nombre del médico
-                Text(
-                    text = doctor.nombre,
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold
-                )
+                    Spacer(modifier = Modifier.height(16.dp))
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                // Especialidad y Experiencia
-                Text(
-                    text = "${doctor.especialidad} · ${doctor.experiencia}",
-                    style = MaterialTheme.typography.bodyMedium,
-                    color = Color.Gray
-                )
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                // Calificación y Reseñas
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Icon(
-                        Icons.Default.Star,
-                        contentDescription = null,
-                        tint = Color(0xFFFFB800),
-                        modifier = Modifier.size(18.dp)
-                    )
                     Text(
-                        text = " ${doctor.calificacion} (${doctor.resenas} reseñas)",
+                        text = doctor.nombre,
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold
+                    )
+
+                    Spacer(modifier = Modifier.height(4.dp))
+
+                    Text(
+                        text = "${doctor.especialidad} · ${doctor.experiencia}",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            Icons.Default.Star,
+                            contentDescription = null,
+                            tint = Color(0xFFFFB800),
+                            modifier = Modifier.size(18.dp)
+                        )
+                        Text(
+                            text = " ${doctor.calificacion} (${doctor.resenas} reseñas)",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = Color.Gray
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(24.dp))
+
+                    Text(
+                        text = doctor.descripcion,
+                        style = MaterialTheme.typography.bodyMedium,
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
 
-                Spacer(modifier = Modifier.height(24.dp))
-
-                // Descripción directa
-                Text(
-                    text = doctor.descripcion,
-                    style = MaterialTheme.typography.bodyMedium,
-                    modifier = Modifier.fillMaxWidth()
-                )
+                Button(
+                    onClick = { onReservarClick(doctor.id) },
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(50.dp),
+                    shape = RoundedCornerShape(12.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF532486))
+                ) {
+                    Text("Agendar cita", style = MaterialTheme.typography.titleMedium)
+                }
             }
         } else {
             Box(
