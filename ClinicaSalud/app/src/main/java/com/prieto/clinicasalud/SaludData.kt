@@ -22,6 +22,7 @@ data class Cita(
     val hora: String,
     val estado: String
 )
+
 object SaludRepository {
     val doctores = listOf(
         Doctor(
@@ -52,6 +53,7 @@ object SaludRepository {
             descripcion = "Dermatología clínica, médica y cuidado de la piel."
         )
     )
+
     val citasReservadas = mutableStateListOf(
         Cita(1, "Dra. Ana Torres", "Cardiología", "Viernes 27", "10:30 am", "Confirmada"),
         Cita(2, "Dr. Luis Vega", "Pediatría", "Miércoles 15", "3:00 pm", "Completada")
