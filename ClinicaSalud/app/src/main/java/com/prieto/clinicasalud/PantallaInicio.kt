@@ -21,7 +21,6 @@ fun PantallaInicio(
     onAbrirDrawer: () -> Unit,
     onDoctorClick: (Int) -> Unit
 ) {
-    // Filtro local por especialidad
     var especialidadSeleccionada by remember { mutableStateOf("Cardiología") }
     val especialidades = listOf("Cardiología", "Pediatría", "Dermatología")
 
@@ -35,7 +34,7 @@ fun PantallaInicio(
                 title = {
                     Column {
                         Text("Clínica Salud+", style = MaterialTheme.typography.titleMedium)
-                        Text("Hola, Juan", style = MaterialTheme.typography.bodySmall)
+                        Text("Hola, Alexis", style = MaterialTheme.typography.bodySmall)
                     }
                 },
                 navigationIcon = {
@@ -52,7 +51,6 @@ fun PantallaInicio(
                 .padding(paddingValues)
                 .padding(16.dp)
         ) {
-            // Chips de especialidad
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(especialidades) { esp ->
                     FilterChip(
@@ -67,7 +65,6 @@ fun PantallaInicio(
             Text("Médicos disponibles", style = MaterialTheme.typography.titleMedium)
             Spacer(modifier = Modifier.height(8.dp))
 
-            // Lista de doctores
             LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(doctoresFiltrados) { doc ->
                     Card(

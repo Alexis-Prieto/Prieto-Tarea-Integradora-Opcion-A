@@ -38,7 +38,7 @@ fun AppNavigation() {
                     )
                     Spacer(modifier = Modifier.width(16.dp))
                     Column {
-                        Text("Juan Pérez", style = MaterialTheme.typography.titleMedium)
+                        Text("Alexis Prieto", style = MaterialTheme.typography.titleMedium)
                         Text("Paciente", style = MaterialTheme.typography.bodySmall)
                     }
                 }
@@ -119,6 +119,9 @@ fun AppNavigation() {
                 )
             }
             composable("mis_citas") {
+                PantallaMisCitas(
+                    onAbrirDrawer = { scope.launch { drawerState.open() } }
+                )
             }
         }
     }
