@@ -1,17 +1,21 @@
 package com.prieto.clinicasalud
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountCircle
-import androidx.compose.material.icons.filled.DateRange
-import androidx.compose.material.icons.filled.Home
-import androidx.compose.material.icons.filled.List
+import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.launch
 
@@ -21,54 +25,113 @@ fun AppNavigation() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
+    // Detecta la ruta activa para iluminar la opción seleccionada
+    val navBackStackEntry by navController.currentBackStackEntryAsState()
+    val currentRoute = navBackStackEntry?.destination?.route
+
     ModalNavigationDrawer(
         drawerState = drawerState,
         drawerContent = {
-            ModalDrawerSheet {
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(
+            ModalDrawerSheet(
+                drawerContainerColor = Color.White,
+                modifier = Modifier.width(280.dp)
+            ) {
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
+                        .fillMaxSize()
                         .padding(16.dp)
                 ) {
-                    Icon(
-                        Icons.Default.AccountCircle,
-                        contentDescription = null,
-                        modifier = Modifier.size(48.dp)
-                    )
-                    Spacer(modifier = Modifier.width(16.dp))
-                    Column {
-                        Text("Alexis Prieto", style = MaterialTheme.typography.titleMedium)
-                        Text("Paciente", style = MaterialTheme.typography.bodySmall)
-                    }
-                }
-                HorizontalDivider()
-                NavigationDrawerItem(
-                    icon = { Icon(Icons.Default.Home, contentDescription = null) },
-                    label = { Text("Inicio") },
-                    selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        navController.navigate("inicio") {
-                            popUpTo("inicio") { inclusive = true }
+                    // Header del Paciente (Avatar con Iniciales)
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 12.dp, horizontal = 8.dp)
+                    ) {
+                        Box(
+                            modifier = Modifier
+                                .size(48.dp)
+                                .background(Color(0xFFF3EDF7), CircleShape),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text(
+                                text = "AP",
+                                fontWeight = FontWeight.Bold,
+                                color = Color(0xFF532486),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                        }
+
+                        Spacer(modifier = Modifier.width(16.dp))
+
+                        Column {
+                            Text(
+                                text = "Alexis Prieto",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                            Text(
+                                text = "Paciente",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = Color.Gray
+                            )
                         }
                     }
-                )
-                NavigationDrawerItem(
-                    icon = { Icon(Icons.Default.DateRange, contentDescription = null) },
-                    label = { Text("Mis citas") },
-                    selected = false,
-                    onClick = {
-                        scope.launch { drawerState.close() }
-                        navController.navigate("mis_citas")
+
+                    HorizontalDivider(
+                        color = Color(0xFFEEEEEE),
+                        modifier = Modifier.padding(vertical = 8.dp)
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    // Lista de opciones del Drawer
+                    val opciones = listOf(
+                        Triple("Inicio", "inicio", "inicio"),
+                        Triple("Mis citas", "mis_citas", "mis_citas"),
+                        Triple("Historial médico", "historial", "historial"),
+                        Triple("Perfil", "perfil", "perfil")
+                    )
+
+                    opciones.forEach { (label, route, target) ->
+                        val seleccionado = currentRoute == route
+
+                        NavigationDrawerItem(
+                            icon = {
+                                Icon(
+                                    imageVector = Icons.Outlined.RadioButtonUnchecked,
+                                    contentDescription = null,
+                                    tint = if (seleccionado) Color(0xFF532486) else Color.Gray,
+                                    modifier = Modifier.size(20.dp)
+                                )
+                            },
+                            label = {
+                                Text(
+                                    text = label,
+                                    fontWeight = if (seleccionado) FontWeight.Bold else FontWeight.Normal,
+                                    color = if (seleccionado) Color(0xFF532486) else Color.Black
+                                )
+                            },
+                            selected = seleccionado,
+                            onClick = {
+                                scope.launch { drawerState.close() }
+                                if (route == "inicio" || route == "mis_citas") {
+                                    navController.navigate(target) {
+                                        popUpTo("inicio") { saveState = true }
+                                        launchSingleTop = true
+                                        restoreState = true
+                                    }
+                                }
+                            },
+                            colors = NavigationDrawerItemDefaults.colors(
+                                selectedContainerColor = Color(0xFFF3EDF7),
+                                unselectedContainerColor = Color.Transparent
+                            ),
+                            shape = RoundedCornerShape(16.dp),
+                            modifier = Modifier.padding(vertical = 2.dp)
+                        )
                     }
-                )
-                NavigationDrawerItem(
-                    icon = { Icon(Icons.Default.List, contentDescription = null) },
-                    label = { Text("Historial médico") },
-                    selected = false,
-                    onClick = { scope.launch { drawerState.close() } }
-                )
+                }
             }
         }
     ) {
