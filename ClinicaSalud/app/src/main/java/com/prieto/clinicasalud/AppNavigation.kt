@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.RadioButtonChecked
 import androidx.compose.material.icons.outlined.RadioButtonUnchecked
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,7 +26,7 @@ fun AppNavigation() {
     val drawerState = rememberDrawerState(initialValue = DrawerValue.Closed)
     val scope = rememberCoroutineScope()
 
-    // Detecta la ruta activa para iluminar la opción seleccionada
+    // Detecta la ruta activa para iluminar la opción e ícono correspondiente
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute = navBackStackEntry?.destination?.route
 
@@ -87,19 +88,23 @@ fun AppNavigation() {
 
                     // Lista de opciones del Drawer
                     val opciones = listOf(
-                        Triple("Inicio", "inicio", "inicio"),
-                        Triple("Mis citas", "mis_citas", "mis_citas"),
-                        Triple("Historial médico", "historial", "historial"),
-                        Triple("Perfil", "perfil", "perfil")
+                        "Inicio" to "inicio",
+                        "Mis citas" to "mis_citas",
+                        "Historial médico" to "historial",
+                        "Perfil" to "perfil"
                     )
 
-                    opciones.forEach { (label, route, target) ->
+                    opciones.forEach { (label, route) ->
                         val seleccionado = currentRoute == route
 
                         NavigationDrawerItem(
                             icon = {
                                 Icon(
-                                    imageVector = Icons.Outlined.RadioButtonUnchecked,
+                                    imageVector = if (seleccionado) {
+                                        Icons.Filled.RadioButtonChecked
+                                    } else {
+                                        Icons.Outlined.RadioButtonUnchecked
+                                    },
                                     contentDescription = null,
                                     tint = if (seleccionado) Color(0xFF532486) else Color.Gray,
                                     modifier = Modifier.size(20.dp)
@@ -115,11 +120,21 @@ fun AppNavigation() {
                             selected = seleccionado,
                             onClick = {
                                 scope.launch { drawerState.close() }
-                                if (route == "inicio" || route == "mis_citas") {
-                                    navController.navigate(target) {
-                                        popUpTo("inicio") { saveState = true }
-                                        launchSingleTop = true
-                                        restoreState = true
+
+                                when (route) {
+                                    "inicio" -> {
+                                        if (currentRoute != "inicio") {
+                                            navController.navigate("inicio") {
+                                                popUpTo("inicio") { inclusive = true }
+                                            }
+                                        }
+                                    }
+                                    "mis_citas" -> {
+                                        if (currentRoute != "mis_citas") {
+                                            navController.navigate("mis_citas") {
+                                                popUpTo("inicio")
+                                            }
+                                        }
                                     }
                                 }
                             },
