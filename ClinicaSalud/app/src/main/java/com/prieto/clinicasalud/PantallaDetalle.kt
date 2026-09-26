@@ -26,18 +26,62 @@ fun PantallaDetalle(
     val doctor = SaludRepository.doctores.find { it.id == doctorId }
 
     Scaffold(
+        containerColor = Color.White,
         topBar = {
             TopAppBar(
-                title = { Text("Perfil del médico") },
+                title = {
+                    Text(
+                        text = "Perfil del médico",
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                },
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
                         Icon(
-                            Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Volver"
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.Black
                         )
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                )
             )
+        },
+        bottomBar = {
+            if (doctor != null) {
+                Surface(
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .navigationBarsPadding() // Evita que la barra de navegación del sistema tape el botón
+                            .padding(16.dp)
+                    ) {
+                        Button(
+                            onClick = { onReservarClick(doctor.id) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF532486),
+                                contentColor = Color.White
+                            )
+                        ) {
+                            Text(
+                                text = "Agendar cita",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold
+                            )
+                        }
+                    }
+                }
+            }
         }
     ) { padding ->
         if (doctor != null) {
@@ -45,81 +89,67 @@ fun PantallaDetalle(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.SpaceBetween
+                    .padding(horizontal = 24.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    modifier = Modifier.fillMaxWidth()
+                Spacer(modifier = Modifier.height(16.dp))
+
+                Box(
+                    modifier = Modifier
+                        .size(100.dp)
+                        .background(Color(0xFFE8DEF8), CircleShape),
+                    contentAlignment = Alignment.Center
                 ) {
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Box(
-                        modifier = Modifier
-                            .size(100.dp)
-                            .background(Color(0xFFEADBFF), CircleShape),
-                        contentAlignment = Alignment.Center
-                    ) {
-                        Icon(
-                            Icons.Default.Add,
-                            contentDescription = null,
-                            modifier = Modifier.size(48.dp),
-                            tint = Color(0xFF532486)
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    Text(
-                        text = doctor.nombre,
-                        style = MaterialTheme.typography.titleLarge,
-                        fontWeight = FontWeight.Bold
+                    Icon(
+                        imageVector = Icons.Default.Add,
+                        contentDescription = null,
+                        modifier = Modifier.size(52.dp),
+                        tint = Color(0xFF532486)
                     )
+                }
 
-                    Spacer(modifier = Modifier.height(4.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
+                Text(
+                    text = doctor.nombre,
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = Color.Black
+                )
+
+                Spacer(modifier = Modifier.height(4.dp))
+
+                Text(
+                    text = "${doctor.especialidad} · ${doctor.experiencia}",
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color.Gray
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Icon(
+                        imageVector = Icons.Default.Star,
+                        contentDescription = null,
+                        tint = Color(0xFFFFC107),
+                        modifier = Modifier.size(18.dp)
+                    )
+                    Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        text = "${doctor.especialidad} · ${doctor.experiencia}",
+                        text = "${doctor.calificacion} (${doctor.resenas} reseñas)",
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.Gray
                     )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            Icons.Default.Star,
-                            contentDescription = null,
-                            tint = Color(0xFFFFB800),
-                            modifier = Modifier.size(18.dp)
-                        )
-                        Text(
-                            text = " ${doctor.calificacion} (${doctor.resenas} reseñas)",
-                            style = MaterialTheme.typography.bodyMedium,
-                            color = Color.Gray
-                        )
-                    }
-
-                    Spacer(modifier = Modifier.height(24.dp))
-
-                    Text(
-                        text = doctor.descripcion,
-                        style = MaterialTheme.typography.bodyMedium,
-                        modifier = Modifier.fillMaxWidth()
-                    )
                 }
 
-                Button(
-                    onClick = { onReservarClick(doctor.id) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF532486))
-                ) {
-                    Text("Agendar cita", style = MaterialTheme.typography.titleMedium)
-                }
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Text(
+                    text = doctor.descripcion,
+                    style = MaterialTheme.typography.bodyMedium,
+                    color = Color(0xFF303030),
+                    modifier = Modifier.fillMaxWidth()
+                )
             }
         } else {
             Box(

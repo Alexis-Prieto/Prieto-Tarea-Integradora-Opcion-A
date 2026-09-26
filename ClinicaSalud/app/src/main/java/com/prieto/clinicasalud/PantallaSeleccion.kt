@@ -27,15 +27,67 @@ fun PantallaSeleccion(
     var horaSeleccionada by remember { mutableStateOf(doctor?.horasDisponibles?.firstOrNull() ?: "10:30") }
 
     Scaffold(
+        containerColor = Color.White,
         topBar = {
             TopAppBar(
-                title = { Text("Agendar cita", fontWeight = FontWeight.Bold) },
+                title = { Text("Agendar cita", fontWeight = FontWeight.Bold, color = Color.Black) },
                 navigationIcon = {
                     IconButton(onClick = onVolver) {
-                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver")
+                        Icon(Icons.AutoMirrored.Filled.ArrowBack, contentDescription = "Volver", tint = Color.Black)
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White
+                )
+            )
+        },
+        bottomBar = {
+            if (doctor != null) {
+                Surface(
+                    color = Color.White,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .navigationBarsPadding() // Protege la barra inferior del sistema
+                            .padding(horizontal = 24.dp, vertical = 12.dp)
+                    ) {
+                        Button(
+                            onClick = {
+                                SaludRepository.citasReservadas.add(
+                                    0,
+                                    Cita(
+                                        id = SaludRepository.citasReservadas.size + 1,
+                                        doctorNombre = doctor.nombre,
+                                        especialidad = doctor.especialidad,
+                                        fecha = fechaSeleccionada,
+                                        hora = horaSeleccionada,
+                                        estado = "Confirmada"
+                                    )
+                                )
+                                onContinuar(doctor.nombre, "$fechaSeleccionada, $horaSeleccionada")
+                            },
+                            enabled = fechaSeleccionada.isNotEmpty() && horaSeleccionada.isNotEmpty(),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(52.dp),
+                            shape = RoundedCornerShape(16.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = Color(0xFF532486),
+                                disabledContainerColor = Color(0xFFCCCCCC)
+                            )
+                        ) {
+                            Text(
+                                "Confirmar cita",
+                                style = MaterialTheme.typography.titleMedium,
+                                fontWeight = FontWeight.Bold,
+                                color = Color.White
+                            )
+                        }
                     }
                 }
-            )
+            }
         }
     ) { padding ->
         if (doctor != null) {
@@ -43,84 +95,47 @@ fun PantallaSeleccion(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(padding)
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
-                verticalArrangement = Arrangement.SpaceBetween
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
-                Column {
-                    Text(
-                        text = "Selecciona fecha",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
+                Text(
+                    text = "Selecciona fecha",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(16.dp))
 
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        items(doctor.fechasDisponibles) { fecha ->
-                            val esSeleccionado = (fecha == fechaSeleccionada)
-                            val parts = fecha.split(" ")
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    items(doctor.fechasDisponibles) { fecha ->
+                        val esSeleccionado = (fecha == fechaSeleccionada)
+                        val parts = fecha.split(" ")
 
-                            Surface(
-                                onClick = { fechaSeleccionada = fecha },
-                                shape = RoundedCornerShape(16.dp),
-                                color = if (esSeleccionado) Color(0xFF532486) else Color(0xFFF3EDF7),
-                                modifier = Modifier.size(width = 80.dp, height = 75.dp)
+                        Surface(
+                            onClick = { fechaSeleccionada = fecha },
+                            shape = RoundedCornerShape(16.dp),
+                            color = if (esSeleccionado) Color(0xFF532486) else Color(0xFFF3EDF7),
+                            modifier = Modifier.size(width = 80.dp, height = 75.dp)
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.Center,
+                                modifier = Modifier.fillMaxSize()
                             ) {
-                                Column(
-                                    horizontalAlignment = Alignment.CenterHorizontally,
-                                    verticalArrangement = Arrangement.Center,
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
-                                    if (parts.size >= 2) {
-                                        Text(
-                                            text = parts[0],
-                                            style = MaterialTheme.typography.bodySmall,
-                                            color = if (esSeleccionado) Color.White else Color.DarkGray
-                                        )
-                                        Text(
-                                            text = parts[1],
-                                            style = MaterialTheme.typography.titleMedium,
-                                            fontWeight = FontWeight.Bold,
-                                            color = if (esSeleccionado) Color.White else Color.Black
-                                        )
-                                    } else {
-                                        Text(
-                                            text = fecha,
-                                            style = MaterialTheme.typography.bodyMedium,
-                                            color = if (esSeleccionado) Color.White else Color.Black
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(28.dp))
-
-                    Text(
-                        text = "Selecciona hora",
-                        style = MaterialTheme.typography.titleMedium,
-                        fontWeight = FontWeight.Bold
-                    )
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        items(doctor.horasDisponibles) { hora ->
-                            val esSeleccionado = (hora == horaSeleccionada)
-
-                            Surface(
-                                onClick = { horaSeleccionada = hora },
-                                shape = RoundedCornerShape(16.dp),
-                                color = if (esSeleccionado) Color(0xFF532486) else Color(0xFFF3EDF7),
-                                modifier = Modifier.size(width = 90.dp, height = 48.dp)
-                            ) {
-                                Box(
-                                    contentAlignment = Alignment.Center,
-                                    modifier = Modifier.fillMaxSize()
-                                ) {
+                                if (parts.size >= 2) {
                                     Text(
-                                        text = hora,
-                                        style = MaterialTheme.typography.bodyMedium,
+                                        text = parts[0],
+                                        style = MaterialTheme.typography.bodySmall,
+                                        color = if (esSeleccionado) Color.White else Color.DarkGray
+                                    )
+                                    Text(
+                                        text = parts[1],
+                                        style = MaterialTheme.typography.titleMedium,
                                         fontWeight = FontWeight.Bold,
+                                        color = if (esSeleccionado) Color.White else Color.Black
+                                    )
+                                } else {
+                                    Text(
+                                        text = fecha,
+                                        style = MaterialTheme.typography.bodyMedium,
                                         color = if (esSeleccionado) Color.White else Color.Black
                                     )
                                 }
@@ -129,32 +144,38 @@ fun PantallaSeleccion(
                     }
                 }
 
-                Button(
-                    onClick = {
-                        SaludRepository.citasReservadas.add(
-                            0,
-                            Cita(
-                                id = SaludRepository.citasReservadas.size + 1,
-                                doctorNombre = doctor.nombre,
-                                especialidad = doctor.especialidad,
-                                fecha = fechaSeleccionada,
-                                hora = horaSeleccionada,
-                                estado = "Confirmada"
-                            )
-                        )
-                        onContinuar(doctor.nombre, "$fechaSeleccionada, $horaSeleccionada")
-                    },
-                    enabled = fechaSeleccionada.isNotEmpty() && horaSeleccionada.isNotEmpty(),
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(50.dp),
-                    shape = RoundedCornerShape(12.dp),
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF532486),
-                        disabledContainerColor = Color(0xFFCCCCCC)
-                    )
-                ) {
-                    Text("Confirmar cita", style = MaterialTheme.typography.titleMedium, color = Color.White)
+                Spacer(modifier = Modifier.height(28.dp))
+
+                Text(
+                    text = "Selecciona hora",
+                    style = MaterialTheme.typography.titleMedium,
+                    fontWeight = FontWeight.Bold
+                )
+                Spacer(modifier = Modifier.height(16.dp))
+
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+                    items(doctor.horasDisponibles) { hora ->
+                        val esSeleccionado = (hora == horaSeleccionada)
+
+                        Surface(
+                            onClick = { horaSeleccionada = hora },
+                            shape = RoundedCornerShape(16.dp),
+                            color = if (esSeleccionado) Color(0xFF532486) else Color(0xFFF3EDF7),
+                            modifier = Modifier.size(width = 90.dp, height = 48.dp)
+                        ) {
+                            Box(
+                                contentAlignment = Alignment.Center,
+                                modifier = Modifier.fillMaxSize()
+                            ) {
+                                Text(
+                                    text = hora,
+                                    style = MaterialTheme.typography.bodyMedium,
+                                    fontWeight = FontWeight.Bold,
+                                    color = if (esSeleccionado) Color.White else Color.Black
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }

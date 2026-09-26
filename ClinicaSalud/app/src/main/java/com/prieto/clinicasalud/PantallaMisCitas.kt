@@ -23,14 +23,18 @@ fun PantallaMisCitas(
     val citas = SaludRepository.citasReservadas
 
     Scaffold(
+        containerColor = Color.White, // <--- 1. FONDO BLANCO PURO DE LA PANTALLA
         topBar = {
             TopAppBar(
-                title = { Text("Mis citas", fontWeight = FontWeight.Bold) },
+                title = { Text("Mis citas", fontWeight = FontWeight.Bold, color = Color.Black) },
                 navigationIcon = {
                     IconButton(onClick = onAbrirDrawer) {
-                        Icon(Icons.Default.Menu, contentDescription = "Menú")
+                        Icon(Icons.Default.Menu, contentDescription = "Menú", tint = Color.Black)
                     }
-                }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.White // <--- 2. FONDO BLANCO PURO DE LA BARRA
+                )
             )
         }
     ) { padding ->

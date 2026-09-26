@@ -27,6 +27,8 @@ fun PantallaConfirmacion(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White) // <--- FONDO BLANCO PURO
+            .navigationBarsPadding()  // Evita superposición con la barra del sistema
             .padding(24.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
@@ -52,7 +54,8 @@ fun PantallaConfirmacion(
         Text(
             text = "¡Cita agendada!",
             style = MaterialTheme.typography.titleLarge,
-            fontWeight = FontWeight.Bold
+            fontWeight = FontWeight.Bold,
+            color = Color.Black
         )
 
         Spacer(modifier = Modifier.height(8.dp))
